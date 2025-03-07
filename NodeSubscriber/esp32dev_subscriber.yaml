@@ -1,0 +1,220 @@
+# กำหนดค่าพื้นฐานของ ESPHome
+esphome:
+  name: esp32dev_subscriber01  # ชื่ออุปกรณ์ใน ESPHome
+  friendly_name: esp32dev_subscriber01  # ชื่อที่แสดงใน Home Assistant
+
+# กำหนดค่าของบอร์ด ESP32
+esp32:
+  board: esp32dev  # กำหนดชนิดของบอร์ดเป็น ESP32 รุ่น esp32dev
+  framework:
+    type: arduino  # ใช้ Arduino Framework สำหรับการพัฒนา
+
+# ใช้ตัวแปรสำหรับเก็บค่าซ้ำซ้อน
+substitutions:
+  esp_name: esp32dev_sub01  # กำหนดชื่อย่อของ ESP32 อุปกรณ์นี้
+
+# เปิดใช้งานระบบบันทึก log สำหรับดูสถานะของอุปกรณ์
+logger:
+
+# เปิดใช้งาน API เพื่อให้ Home Assistant เชื่อมต่อและสื่อสารกับอุปกรณ์ได้
+api:
+  encryption:
+    key: "xOJSxzmjYrc/+RXZZauj47+Ilr5PPnETPd/A/JXY2c8="  # คีย์สำหรับเข้ารหัสการสื่อสารระหว่าง Home Assistant กับ ESPHome
+
+# เปิดใช้งาน Over-The-Air (OTA) สำหรับอัปเดตเฟิร์มแวร์ผ่าน Wi-Fi
+ota:
+  - platform: esphome  # ใช้ ESPHome OTA สำหรับอัปเดต
+    password: "8e182ee2372f82e4b5014ad0dbae7a1a"  # รหัสผ่านที่ต้องใช้สำหรับการอัปเดตเฟิร์มแวร์
+
+# ตั้งค่าการเชื่อมต่อ Wi-Fi
+wifi:
+  ssid: !secret wifi_ssid  # ใช้ค่า SSID (ชื่อ Wi-Fi) จากไฟล์ secrets.yaml
+  password: !secret wifi_password  # ใช้รหัสผ่าน Wi-Fi จากไฟล์ secrets.yaml
+  power_save_mode: none  # ปิดโหมดประหยัดพลังงาน Wi-Fi เพื่อให้การเชื่อมต่อเสถียรขึ้น
+
+  # กำหนดค่า IP แบบคงที่ (Static IP) สำหรับ ESP32
+  manual_ip:
+    static_ip: 192.168.1.93  # ตั้งค่า IP ของ ESP32 ในเครือข่าย
+    gateway: 192.168.1.1  # กำหนด IP ของ Router (เกตเวย์ของเครือข่าย)
+    subnet: 255.255.255.0  # กำหนดค่าซับเน็ต (Subnet Mask) ของเครือข่าย
+    dns1: 192.168.1.1  # ตั้งค่า DNS เป็น Router (ใช้เป็น DNS Server)
+
+  # ตั้งค่า AP (Access Point) สำรอง
+  # เมื่ออุปกรณ์ไม่สามารถเชื่อมต่อ Wi-Fi ได้ มันจะสร้าง Wi-Fi Hotspot เอง
+  ap:
+    ssid: "esp32dev_sub01"  # ชื่อ SSID ของ Wi-Fi Hotspot ที่สร้างขึ้น
+    password: "0814111142"  # รหัสผ่านของ Wi-Fi Hotspot
+
+# ใช้ on_connect trigger เพื่อตั้งค่าการทำงานเมื่ออุปกรณ์เชื่อมต่อ Wi-Fi สำเร็จ
+on_connect:
+  then:
+    - switch.turn_on: gpio2  # เปิดใช้งาน GPIO2 เมื่อเชื่อมต่อ Wi-Fi สำเร็จ
+
+# ใช้ Home Assistant เป็นแหล่งข้อมูลเวลา
+time:
+  - platform: homeassistant  # ซิงค์เวลาจาก Home Assistant
+    id: homeassistant_time  # กำหนดตัวระบุของ time component นี้
+
+# ✅ เพิ่ม MQTT Client สำหรับเชื่อมต่อกับ MQTT Broker
+mqtt:
+  broker: "192.168.1.201"  # ระบุที่อยู่ IP ของ MQTT Broker (เช่น Home Assistant หรือ Mosquitto)
+  username: "sompoch"  # ชื่อผู้ใช้สำหรับเข้าสู่ระบบ MQTT (ถ้ากำหนดไว้)
+  password: "0814111142"  # รหัสผ่านสำหรับเข้าสู่ระบบ MQTT (ถ้ากำหนดไว้)
+
+# ✅ เปิดใช้งาน Captive Portal 
+# ฟีเจอร์นี้ช่วยให้สามารถเข้าถึงอุปกรณ์ผ่าน Wi-Fi Hotspot เมื่อการเชื่อมต่อ Wi-Fi ปกติล้มเหลว
+captive_portal:
+
+# ✅ เพิ่ม Binary Sensor เพื่อตรวจสอบสถานะ Wi-Fi
+binary_sensor:
+  - platform: status  # ใช้เซ็นเซอร์ built-in เพื่อตรวจสอบสถานะของอุปกรณ์
+    name: "WiFi Status"  # กำหนดชื่อของเซ็นเซอร์ใน Home Assistant
+    id: wifi_status  # กำหนด ID สำหรับใช้ใน Automation หรือเงื่อนไขอื่น ๆ
+    
+switch:
+  # ✅ กำหนดสวิตช์สำหรับควบคุม GPIO2
+  - platform: gpio
+    id: gpio2  # ตั้งค่า ID สำหรับใช้งานภายใน ESPHome
+    pin: 2  # กำหนดให้ควบคุมขา GPIO2
+    restore_mode: ALWAYS_OFF  # เมื่ออุปกรณ์รีสตาร์ท ค่าเริ่มต้นของ GPIO2 จะเป็นปิด (OFF)
+
+  # ✅ สวิตช์ที่ทำงานตามสถานะ Wi-Fi
+  - platform: template
+    name: "WiFi Connected Switch"  # ชื่อสวิตช์ที่แสดงใน Home Assistant
+    turn_on_action:
+      then:
+        - switch.turn_on: gpio2  # เปิด GPIO2 เมื่อสวิตช์ถูกเปิด
+    lambda: |-
+      return id(wifi_status).state;  # ใช้ค่า boolean ของ Wi-Fi Status (true = ON, false = OFF)
+
+# ✅ ใช้ text_sensor แทน sensor.mqtt เพื่อรับค่าจาก MQTT
+text_sensor:
+  # ✅ Text Sensor สำหรับอุณหภูมิ (Temperature)
+  - platform: mqtt_subscribe
+    name: "TLoRa:DHT22 Temperature"  # ชื่อที่แสดงใน Home Assistant
+    id: dht22_temperature  # ID สำหรับใช้งานภายใน ESPHome
+    topic: "helteclora32/NodeV3/node1/temperature"  # กำหนด MQTT Topic สำหรับรับค่าอุณหภูมิ
+
+  # ✅ Text Sensor สำหรับความชื้น (Humidity)
+  - platform: mqtt_subscribe
+    name: "TLoRa:DHT22 Humidity"  # ชื่อที่แสดงใน Home Assistant
+    id: dht22_humidity  # ID สำหรับใช้งานภายใน ESPHome
+    topic: "helteclora32/NodeV3/node1/humidity"  # กำหนด MQTT Topic สำหรับรับค่าความชื้น
+
+  # ✅ Text Sensor สำหรับค่าความชื้นในดิน (Soil Moisture)
+  - platform: mqtt_subscribe
+    name: "TLoRa:Soil Moisture"  # ชื่อที่แสดงใน Home Assistant
+    id: soil_moisture  # ID สำหรับใช้งานภายใน ESPHome
+    topic: "helteclora32/NodeV3/node1/soil_moisture"  # กำหนด MQTT Topic สำหรับรับค่าความชื้นในดิน
+
+# ✅ ตั้งค่า Sensor สำหรับรับค่าและแปลงค่าจากข้อความเป็นตัวเลข
+sensor:
+  # ✅ Sensor สำหรับอุณหภูมิ (Temperature)
+  - platform: template
+    name: "SLoRa Temperature"  # ชื่อที่แสดงใน Home Assistant
+    id: lora_temperature  # ID สำหรับใช้งานภายใน ESPHome
+    unit_of_measurement: "°C"  # หน่วยของอุณหภูมิ
+    accuracy_decimals: 1  # กำหนดให้ค่ามีทศนิยม 1 ตำแหน่ง
+    update_interval: 10s  # อัปเดตค่าทุก 10 วินาที
+    lambda: |-
+      float temp_value = NAN;  // กำหนดค่าเริ่มต้นเป็น NAN (Not a Number)
+      std::string raw_data = id(dht22_temperature).state;  // ดึงค่าจาก text_sensor
+
+      // ค้นหาตำแหน่งของ "T:" และ "H:" ในข้อความที่รับมา
+      size_t t_pos = raw_data.find("T:");
+      size_t h_pos = raw_data.find("H:");
+      size_t end_pos = raw_data.find(",");  // ค้นหาตำแหน่งของเครื่องหมาย ,
+
+      // ถ้าพบ "T:" ในข้อมูลที่รับมา
+      if (t_pos != std::string::npos) {
+        // ดึงค่าตัวเลขหลัง "T:" และแปลงจาก string เป็น float
+        temp_value = std::stof(raw_data.substr(t_pos + 2, end_pos - t_pos - 2));
+      }
+
+      // แสดงค่าใน Log ของ ESPHome (Debugging)
+      ESP_LOGD("LoRa", "Parsed Temperature: %.2f", temp_value);
+
+      return temp_value;  // คืนค่าที่แปลงเป็น float แล้ว
+
+# ✅ Sensor สำหรับความชื้น (Humidity)
+  - platform: template
+    name: "SLoRa Humidity"  # ชื่อที่แสดงใน Home Assistant
+    id: lora_humidity  # ID สำหรับใช้ภายใน ESPHome
+    unit_of_measurement: "%"  # หน่วยของค่าความชื้นเป็นเปอร์เซ็นต์
+    accuracy_decimals: 1  # กำหนดให้ค่ามีทศนิยม 1 ตำแหน่ง
+    update_interval: 10s  # อัปเดตค่าทุก 10 วินาที
+    lambda: |-
+      float humidity_value = NAN;  // กำหนดค่าเริ่มต้นเป็น NAN (Not a Number) เผื่อในกรณีที่ไม่สามารถอ่านค่าได้
+      std::string raw_data = id(dht22_humidity).state;  // ดึงค่าข้อมูลจาก text_sensor ที่รับจาก MQTT
+
+      // ค้นหาตำแหน่งของ "H:" (ค่าความชื้น) และ "Soil:" (ค่าความชื้นในดิน) ในข้อความที่ได้รับ
+      size_t h_pos = raw_data.find("H:");  // หาตำแหน่งของ "H:" เพื่อบอกจุดเริ่มต้นของค่าความชื้น
+      size_t soil_pos = raw_data.find("Soil:");  // หาตำแหน่งของ "Soil:" เพื่อบอกจุดสิ้นสุดของค่าความชื้น
+
+      // ตรวจสอบว่าพบ "H:" ในข้อมูลหรือไม่
+      if (h_pos != std::string::npos) {  // ถ้าพบ "H:"
+        // แปลงค่าจาก string เป็น float โดยดึงค่าที่อยู่หลัง "H:"
+        humidity_value = std::stof(raw_data.substr(h_pos + 2, soil_pos - h_pos - 2));
+        // `h_pos + 2` คือข้าม "H:" (2 ตัวอักษร) เพื่อเริ่มอ่านค่าตัวเลขที่ตามมา
+        // `soil_pos - h_pos - 2` คือระยะห่างระหว่าง "H:" และ "Soil:" เพื่อตัดค่าความชื้นออกมา
+      }
+
+      // แสดงค่าที่แปลงได้ใน Log ของ ESPHome สำหรับ Debugging
+      ESP_LOGD("LoRa", "Parsed Humidity: %.2f", humidity_value);
+
+      return humidity_value;  // คืนค่าความชื้นที่แปลงเป็นตัวเลขเพื่อใช้งานใน Home Assistant
+
+# ✅ Sensor สำหรับความชื้นในดิน (Soil Moisture)
+  - platform: template
+    name: "SLoRa Soil Moisture"  # ชื่อที่แสดงใน Home Assistant
+    id: lora_soil_moisture  # ID สำหรับใช้ภายใน ESPHome
+    unit_of_measurement: "%"  # หน่วยของค่าความชื้นในดินเป็นเปอร์เซ็นต์
+    accuracy_decimals: 1  # กำหนดให้ค่ามีทศนิยม 1 ตำแหน่ง
+    update_interval: 10s  # อัปเดตค่าทุก 10 วินาที
+    lambda: |-
+      float soilmoisture_value = NAN;  // กำหนดค่าเริ่มต้นเป็น NAN (Not a Number) เผื่อกรณีไม่สามารถอ่านค่าได้
+      std::string raw_data = id(soil_moisture).state;  // ดึงค่าจาก text_sensor ที่รับค่าจาก MQTT
+
+      // ค้นหาตำแหน่งของ "Soil:" ในข้อความที่ได้รับ
+      size_t soil_pos = raw_data.find("Soil:");
+
+      // ตรวจสอบว่าพบ "Soil:" หรือไม่
+      if (soil_pos != std::string::npos) {
+        try {
+          // แปลงค่าความชื้นในดินเป็น float โดยตัดข้อความหลัง "Soil:" ออกมา
+          soilmoisture_value = std::stof(raw_data.substr(soil_pos + 5));
+        } catch (...) {
+          ESP_LOGE("LoRa", "Error parsing soil moisture data!");  // แจ้งข้อผิดพลาดหากไม่สามารถแปลงค่าได้
+          soilmoisture_value = NAN;  // ถ้ามีปัญหาในการแปลงค่า ให้ใช้ NAN เพื่อหลีกเลี่ยง error
+        }
+      }
+
+      // แสดงค่าความชื้นในดินที่แปลงแล้วใน Log ของ ESPHome สำหรับ Debugging
+      ESP_LOGD("LoRa", "Parsed Soil Moisture: %.2f", soilmoisture_value);
+
+      return soilmoisture_value;  // คืนค่าที่แปลงเป็นตัวเลขแล้ว
+
+# ✅ ตรวจสอบระยะเวลาการทำงานของอุปกรณ์ (Uptime)
+  - platform: uptime
+    name: "${esp_name} - Uptime"  # แสดงชื่อ uptime ตามตัวแปร esp_name
+    icon: mdi:clock-outline  # ใช้ไอคอนรูปนาฬิกา
+    update_interval: 60s  # อัปเดตค่าทุก 60 วินาที (1 นาที)
+
+# ✅ ตรวจสอบความแรงของสัญญาณ Wi-Fi ในหน่วย dB (RSSI)
+  - platform: wifi_signal  # ใช้ platform wifi_signal เพื่อตรวจสอบ RSSI (Received Signal Strength Indicator)
+    name: "${esp_name} - WiFi Signal dB"  # ชื่อเซ็นเซอร์ที่แสดงใน Home Assistant
+    id: wifi_signal_db  # กำหนด ID เพื่อใช้ใน sensor อื่น
+    update_interval: 60s  # อัปเดตค่าทุก 60 วินาที
+    entity_category: "diagnostic"  # จัดหมวดหมู่เป็น diagnostic (ค่าการวิเคราะห์ระบบ)
+
+# ✅ แปลงค่าความแรงของสัญญาณ Wi-Fi เป็นเปอร์เซ็นต์ (%)
+  - platform: copy  # ใช้ platform copy เพื่อคัดลอกค่าจาก sensor อื่น
+    source_id: wifi_signal_db  # ใช้ค่า RSSI (dB) จาก sensor "wifi_signal_db"
+    name: "${esp_name} - WiFi Signal Percent"  # ชื่อเซ็นเซอร์ที่แสดงใน Home Assistant
+    filters:
+      - lambda: return min(max(2 * (x + 100.0), 0.0), 100.0);  
+        # แปลง RSSI (-100 ถึง 0 dB) เป็น % โดยใช้สมการ 2 * (RSSI + 100)
+        # ถ้าค่าน้อยกว่า 0% ให้เป็น 0%, ถ้ามากกว่า 100% ให้เป็น 100%
+    unit_of_measurement: "Signal %"  # แสดงหน่วยเป็นเปอร์เซ็นต์
+    entity_category: "diagnostic"  # จัดหมวดหมู่เป็น diagnostic
+    device_class: ""  # ไม่กำหนด class ของอุปกรณ์ (สามารถปล่อยว่าง)
