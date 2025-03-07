@@ -1,7 +1,11 @@
 #include "LoRaWan_APP.h"     // ✅ ไลบรารีสำหรับการใช้งาน LoRaWAN (รองรับการรับ-ส่งข้อมูลผ่าน LoRa)
+//Download https://github.com/HelTecAutomation/ESP32_LoRaWAN/archive/refs/heads/master.zip
 #include "Arduino.h"         // ✅ ไลบรารีหลักของ Arduino (รองรับฟังก์ชันพื้นฐาน เช่น `delay()`, `millis()`, `pinMode()` ฯลฯ)
+//Download https://github.com/espressif/arduino-esp32/archive/refs/heads/master.zip
 #include "HT_SSD1306Wire.h"  // ✅ ไลบรารีสำหรับจอ OLED (Heltec SSD1306) ใช้สำหรับแสดงผลข้อมูล
+//Download https://github.com/ThingPulse/esp8266-oled-ssd1306/archive/refs/heads/master.zip
 #include "DHT.h"             // ✅ ไลบรารีสำหรับเซ็นเซอร์ DHT (DHT11, DHT22) ใช้วัดอุณหภูมิและความชื้น
+//Download https://github.com/adafruit/DHT-sensor-library/archive/refs/heads/master.zip
 #include <Wire.h>            // ✅ ไลบรารีสำหรับโปรโตคอล I2C (ใช้สื่อสารกับอุปกรณ์ เช่น OLED, เซ็นเซอร์, EEPROM)
 #include "esp_sleep.h"       // ✅ ไลบรารีสำหรับจัดการโหมด Sleep ของ ESP32 เพื่อลดการใช้พลังงาน
 
