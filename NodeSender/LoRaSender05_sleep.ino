@@ -1,5 +1,5 @@
 #include "LoRaWan_APP.h"     // ✅ ไลบรารีสำหรับการใช้งาน LoRaWAN (รองรับการรับ-ส่งข้อมูลผ่าน LoRa)
-//Download https://github.com/HelTecAutomation/ESP32_LoRaWAN/archive/refs/heads/master.zip
+//Download https://github.com/HelTecAutomation/Heltec_ESP32/archive/refs/heads/master.zip
 #include "Arduino.h"         // ✅ ไลบรารีหลักของ Arduino (รองรับฟังก์ชันพื้นฐาน เช่น `delay()`, `millis()`, `pinMode()` ฯลฯ)
 //Download https://github.com/espressif/arduino-esp32/archive/refs/heads/master.zip
 #include "HT_SSD1306Wire.h"  // ✅ ไลบรารีสำหรับจอ OLED (Heltec SSD1306) ใช้สำหรับแสดงผลข้อมูล
