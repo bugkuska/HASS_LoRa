@@ -9,7 +9,7 @@ esp32:
   framework:
     type: arduino  # ใช้ Arduino Framework สำหรับการพัฒนา
 
-# ใช้ตัวแปรสำหรับเก็บค่าซ้ำซ้อน
+# ใช้ตัวแปรสำหรับเก็บค่า
 substitutions:
   esp_name: esp32dev_sub01  # กำหนดชื่อย่อของ ESP32 อุปกรณ์นี้
 
@@ -46,9 +46,9 @@ wifi:
     password: "0814111142"  # รหัสผ่านของ Wi-Fi Hotspot
 
 # ใช้ on_connect trigger เพื่อตั้งค่าการทำงานเมื่ออุปกรณ์เชื่อมต่อ Wi-Fi สำเร็จ
-on_connect:
-  then:
-    - switch.turn_on: gpio2  # เปิดใช้งาน GPIO2 เมื่อเชื่อมต่อ Wi-Fi สำเร็จ
+  on_connect:
+    then:
+      - switch.turn_on: gpio2  # เปิดใช้งาน GPIO2 เมื่อเชื่อมต่อ Wi-Fi สำเร็จ
 
 # ใช้ Home Assistant เป็นแหล่งข้อมูลเวลา
 time:
