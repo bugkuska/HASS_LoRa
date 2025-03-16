@@ -1,0 +1,224 @@
+type: sections
+max_columns: 2
+title: ทดสอบLoRa
+path: lora
+sections:
+  - type: grid
+    cards:
+      - type: custom:button-card
+        name: Temp & Humi LoRa:DHT22
+        styles:
+          card:
+            - background-color: green
+            - box-shadow: 10px
+            - border-radius: 10px
+          name:
+            - justify-self: center
+            - font-size: 1.3em
+            - color: white
+            - box-shadow: none
+          grid:
+            - grid-template-areas: "\"n\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: auto
+          custom_fields:
+            icon: ""
+          icon:
+            - display: none
+        show_name: true
+      - square: true
+        type: grid
+        cards:
+          - type: custom:canvas-gauge-card
+            entity: sensor.esp32sub01_slora_temperature
+            font_size: 1em
+            gauge:
+              animatedValue: true
+              borders: true
+              colorBorderOuter: white
+              colorBorderOuterEnd: white
+              colorBorderMiddle: green
+              colorBorderMiddleEnd: green
+              colorBorderInner: white
+              colorBorderInnerEnd: white
+              colorNumbers: white
+              colorPlate: black
+              colorTitle: "#f5f5f5"
+              colorUnits: "#f5f5f5"
+              height: 220
+              highlights:
+                - color: green
+                  from: 0
+                  to: 25
+                - color: yellow
+                  from: 25
+                  to: 50
+                - color: orange
+                  from: 50
+                  to: 75
+                - color: red
+                  from: 75
+                  to: 100
+              majorTicks:
+                - "0"
+                - "10"
+                - "20"
+                - "30"
+                - "40"
+                - "50"
+                - "60"
+                - "70"
+                - "80"
+                - "90"
+                - "100"
+              maxValue: 100
+              minValue: 0
+              minorTicks: 2
+              startAngle: 45
+              strokeTicks: true
+              ticksAngle: 270
+              title: อุณหภูมินอกบ้าน
+              units: °C
+              type: radial-gauge
+              valueBox: true
+              valueDec: 2
+              valueInt: 2
+              width: 200
+          - type: custom:canvas-gauge-card
+            entity: sensor.esp32sub01_slora_humidity
+            font_size: 1em
+            gauge:
+              animatedValue: true
+              borders: true
+              colorBorderOuter: white
+              colorBorderOuterEnd: white
+              colorBorderMiddle: blue
+              colorBorderMiddleEnd: blue
+              colorBorderInner: blue
+              colorBorderInnerEnd: blue
+              colorNumbers: blue
+              colorPlate: white
+              colorTitle: blue
+              colorUnits: blue
+              height: 220
+              highlights:
+                - color: red
+                  from: 0
+                  to: 25
+                - color: yellow
+                  from: 25
+                  to: 50
+                - color: green
+                  from: 50
+                  to: 75
+                - color: blue
+                  from: 75
+                  to: 100
+              majorTicks:
+                - "0"
+                - "10"
+                - "20"
+                - "30"
+                - "40"
+                - "50"
+                - "60"
+                - "70"
+                - "80"
+                - "90"
+                - "100"
+              maxValue: 100
+              minValue: 0
+              minorTicks: 2
+              startAngle: 45
+              strokeTicks: true
+              ticksAngle: 270
+              title: ความชื้นสัมพัทธ์
+              units: "% RH"
+              type: radial-gauge
+              valueBox: true
+              valueDec: 2
+              valueInt: 2
+              width: 200
+        columns: 2
+  - type: grid
+    cards:
+      - type: custom:button-card
+        name: LoRa SoilMoisture
+        styles:
+          card:
+            - background-color: green
+            - box-shadow: 10px
+            - border-radius: 10px
+          name:
+            - justify-self: center
+            - font-size: 1.3em
+            - color: white
+            - box-shadow: none
+          grid:
+            - grid-template-areas: "\"n\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: auto
+          custom_fields:
+            icon: ""
+          icon:
+            - display: none
+        show_name: true
+      - square: true
+        type: grid
+        cards:
+          - type: custom:canvas-gauge-card
+            entity: sensor.esp32sub01_slora_soil_moisture
+            gauge:
+              animatedValue: true
+              borders: true
+              colorBorderOuter: white
+              colorBorderOuterEnd: white
+              colorBorderMiddle: blue
+              colorBorderMiddleEnd: blue
+              colorBorderInner: blue
+              colorBorderInnerEnd: blue
+              colorNumbers: blue
+              colorPlate: white
+              colorTitle: blue
+              colorUnits: blue
+              height: 220
+              highlights:
+                - color: red
+                  from: 0
+                  to: 25
+                - color: yellow
+                  from: 25
+                  to: 50
+                - color: green
+                  from: 50
+                  to: 75
+                - color: blue
+                  from: 75
+                  to: 100
+              majorTicks:
+                - "0"
+                - "10"
+                - "20"
+                - "30"
+                - "40"
+                - "50"
+                - "60"
+                - "70"
+                - "80"
+                - "90"
+                - "100"
+              maxValue: 100
+              minValue: 0
+              minorTicks: 2
+              startAngle: 45
+              strokeTicks: true
+              ticksAngle: 270
+              title: ความชื้นสัมพัทธ์
+              units: "% RH"
+              type: radial-gauge
+              valueBox: true
+              valueDec: 2
+              valueInt: 2
+              width: 200
+        columns: 2
+cards: []
