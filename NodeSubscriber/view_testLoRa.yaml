@@ -1,6 +1,6 @@
 type: sections
 max_columns: 2
-title: ทดสอบLoRa
+title: ทดสอบ LoRa
 path: lora
 sections:
   - type: grid
