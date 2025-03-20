@@ -1,1 +1,36 @@
-xx
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+#Notify
+notify:
+#TelegramBot
+ - name: telegram
+   platform: telegram
+   chat_id: -4775955555  # ใช้ chat_id ของกลุ่ม
+   
+#TelegramBot
+telegram_bot:
+ - platform: polling
+   api_key: "7032582011:AAEY9L67I6nH8i5ceOGlwkPir2V19B55555"
+   allowed_chat_ids:
+    - -4775955555 # ใช้ chat_id ของกลุ่ม
+    
+
+input_number:
+  cooling_fan01_setpoint:
+    name: "Cooling Fan Setpoint"
+    initial: 35
+    min: 0
+    max: 100
+    step: 0.5
+    unit_of_measurement: "°C"
+    mode: slider
