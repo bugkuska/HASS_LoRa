@@ -1,33 +1,93 @@
-alias: แจ้งเตือนอุณหภูมิผ่าน Telegram
-description: ""
-triggers:
-  - minutes: /1
-    id: high_temp
-    trigger: time_pattern
-  - minutes: "0"
-    id: low_temp
-    trigger: time_pattern
-conditions:
-  - condition: template
-    value_template: |
-      {% if trigger.id == 'high_temp' %}
-        {{ states('sensor.esp32sub01_slora_temperature_2') | float > states('input_number.cooling_fan01_setpoint') | float }}
-      {% elif trigger.id == 'low_temp' %}
-        {{ states('sensor.esp32sub01_slora_temperature_2') | float < states('input_number.cooling_fan01_setpoint') | float }}
-      {% else %}
-        false
-      {% endif %}
-actions:
-  - data:
-      message: |
-        {% if trigger.id == 'high_temp' %}
-          ⚠️ สถานะผิดปกติ! 📢
-          🔥 อุณหภูมิ: {{ states('sensor.esp32sub01_slora_temperature_2') }} °C
-          🎯 ค่าที่ตั้งไว้: {{ states('input_number.cooling_fan01_setpoint') }} °C
-        {% elif trigger.id == 'low_temp' %}
-          ✅ สถานะปกติ 🎉
-          🌡️ อุณหภูมิ: {{ states('sensor.esp32sub01_slora_temperature_2') }} °C
-          🎯 ค่าที่ตั้งไว้: {{ states('input_number.cooling_fan01_setpoint') }} °C
-        {% endif %}
-    action: notify.telegram
-mode: single
+title: Test Automation
+path: hvac
+type: sections
+max_columns: 2
+sections:
+  - type: grid
+    cards:
+      - type: custom:button-card
+        name: อุณหภูมิและความชื้นระบบ
+        styles:
+          card:
+            - background-color: "#333333"
+            - box-shadow: 10px
+            - border-radius: 10px
+          name:
+            - justify-self: center
+            - font-size: 1.5em
+            - color: white
+            - box-shadow: none
+          grid:
+            - grid-template-areas: "\"n\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: auto
+          custom_fields:
+            icon: ""
+          icon:
+            - display: none
+        show_name: true
+      - type: custom:canvas-gauge-card
+        entity: sensor.esp32sub01_slora_temperature
+        gauge:
+          animatedValue: true
+          borders: true
+          colorBorderOuter: white
+          colorBorderOuterEnd: white
+          colorBorderMiddle: orange
+          colorBorderMiddleEnd: orange
+          colorBorderInner: white
+          colorBorderInnerEnd: white
+          colorNumbers: black
+          colorPlate: white
+          colorTitle: black
+          colorUnits: black
+          height: 270
+          highlights:
+            - color: green
+              from: 0
+              to: 25
+            - color: yellow
+              from: 25
+              to: 50
+            - color: orange
+              from: 50
+              to: 75
+            - color: red
+              from: 75
+              to: 100
+          majorTicks:
+            - "0"
+            - "10"
+            - "20"
+            - "30"
+            - "40"
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+          maxValue: 100
+          minValue: 0
+          minorTicks: 2
+          startAngle: 45
+          strokeTicks: true
+          ticksAngle: 270
+          title: อุณหภูมิ DHT22
+          units: °C
+          type: radial-gauge
+          valueBox: true
+          valueDec: 2
+          valueInt: 2
+          width: 250
+      - type: entities
+        entities:
+          - entity: input_number.cooling_fan01_setpoint
+            icon: mdi:coolant-temperature
+            name: T - Setpoint
+        show_header_toggle: false
+        state_color: true
+        layout_options:
+          grid_columns: 4
+          grid_rows: 2
+cards: []
